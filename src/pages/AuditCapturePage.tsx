@@ -10,7 +10,6 @@ import {
   Loader2,
   MapPin,
   Store,
-  Image as ImageIcon,
   Play,
 } from 'lucide-react';
 
@@ -33,7 +32,7 @@ export default function AuditCapturePage() {
   const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
   const [images, setImages] = useState<CapturedImage[]>([]);
   const [processing, setProcessing] = useState(false);
-  const [auditId, setAuditId] = useState<number | null>(null);
+  const [, setAuditId] = useState<number | null>(null);
   const [error, setError] = useState('');
   const [uploadProgress, setUploadProgress] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);

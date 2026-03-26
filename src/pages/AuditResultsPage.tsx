@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAudit, useAuditImages, useAuditFindings } from '../hooks/useAudits';
+import type { AuditFinding } from '../types';
 import { AUDIT_STATUS_COLORS, AUDIT_STATUS_LABELS, FINDING_STATUS_COLORS, CONFIDENCE_COLORS } from '../lib/constants';
 import {
   ArrowLeft,
@@ -7,7 +8,6 @@ import {
   XCircle,
   HelpCircle,
   Package,
-  Image as ImageIcon,
   MapPin,
   Clock,
   BarChart3,
@@ -188,7 +188,7 @@ export default function AuditResultsPage() {
   );
 }
 
-function FindingRow({ finding }: { finding: { detected_label: string | null; detected_brand: string | null; product?: { name: string; brand: { name: string; category: string } } | null; confidence_score: number | null; facing_count: number; shelf_position: string | null; status: string } }) {
+function FindingRow({ finding }: { finding: AuditFinding }) {
   const confidence = finding.confidence_score;
   const confidenceLabel = confidence ? (confidence >= 0.8 ? 'high' : confidence >= 0.5 ? 'medium' : 'low') : null;
 

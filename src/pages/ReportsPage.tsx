@@ -1,6 +1,6 @@
 import { useComplianceByStore, useComplianceByBrand } from '../hooks/useDashboard';
 import { useAudits } from '../hooks/useAudits';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Download, BarChart3 } from 'lucide-react';
 
 export default function ReportsPage() {
@@ -55,7 +55,7 @@ export default function ReportsPage() {
               <BarChart data={storeCompliance}>
                 <XAxis dataKey="store_name" tick={{ fontSize: 11 }} angle={-30} textAnchor="end" height={60} />
                 <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
-                <Tooltip formatter={(value: number) => `${value}%`} />
+                <Tooltip formatter={(value) => `${value}%`} />
                 <Bar dataKey="compliance_pct" radius={[4, 4, 0, 0]}>
                   {storeCompliance.map((entry, i) => (
                     <Cell key={i} fill={entry.compliance_pct >= 80 ? '#10b981' : entry.compliance_pct >= 50 ? '#f59e0b' : '#ef4444'} />
@@ -76,7 +76,7 @@ export default function ReportsPage() {
               <BarChart data={brandCompliance} layout="vertical">
                 <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
                 <YAxis type="category" dataKey="brand_name" width={100} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(value: number) => `${value}%`} />
+                <Tooltip formatter={(value) => `${value}%`} />
                 <Bar dataKey="presence_pct" fill="#1e3a5f" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>

@@ -74,7 +74,7 @@ export default function DashboardPage() {
               <BarChart data={storeCompliance} layout="vertical">
                 <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
                 <YAxis type="category" dataKey="store_name" width={120} tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value: number) => `${value}%`} />
+                <Tooltip formatter={(value) => `${value}%`} />
                 <Bar dataKey="compliance_pct" radius={[0, 4, 4, 0]}>
                   {storeCompliance.map((entry, index) => (
                     <Cell
@@ -101,7 +101,7 @@ export default function DashboardPage() {
               <BarChart data={brandCompliance} layout="vertical">
                 <XAxis type="number" domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
                 <YAxis type="category" dataKey="brand_name" width={100} tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value: number) => `${value}%`} />
+                <Tooltip formatter={(value) => `${value}%`} />
                 <Bar dataKey="presence_pct" fill="#1e3a5f" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>

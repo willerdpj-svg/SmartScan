@@ -45,7 +45,7 @@ export async function getComplianceByStore() {
 
   for (const audit of data || []) {
     const storeId = audit.store_id;
-    const store = audit.store as { name: string; chain: { name: string } } | null;
+    const store = audit.store as unknown as { name: string; chain: { name: string } } | null;
     if (!store) continue;
 
     if (!storeMap.has(storeId)) {
@@ -90,7 +90,7 @@ export async function getComplianceByBrand() {
   const brandMap = new Map<number, { name: string; category: string; found: number; missing: number }>();
 
   for (const finding of data || []) {
-    const brand = finding.brand as { id: number; name: string; category: string } | null;
+    const brand = finding.brand as unknown as { id: number; name: string; category: string } | null;
     if (!brand) continue;
 
     if (!brandMap.has(brand.id)) {

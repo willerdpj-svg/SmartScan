@@ -2,9 +2,9 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import Anthropic from '@anthropic-ai/sdk';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const anthropicApiKey = process.env.ANTHROPIC_API_KEY!;
+const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || '';
+const anthropicApiKey = process.env.ANTHROPIC_API_KEY || '';
 
 interface DetectedProduct {
   brand: string;
@@ -29,6 +29,12 @@ interface VisionResponse {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  if (!supabaseUrl || !supabaseServiceKey || !anthropicApiKey) {
+    return res.status(500).json({
+      message: `Missing env vars: ${!supabaseUrl ? 'VITE_SUPABASE_URL ' : ''}${!supabaseServiceKey ? 'SUPABASE_SERVICE_ROLE_KEY ' : ''}${!anthropicApiKey ? 'ANTHROPIC_API_KEY' : ''}`.trim()
+    });
   }
 
   try {

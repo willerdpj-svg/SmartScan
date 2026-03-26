@@ -21,8 +21,10 @@ interface DetectedProduct {
 
 interface VisionResponse {
   shelf_section: string;
+  shelf_category: string;
   image_quality: string;
   products_detected: DetectedProduct[];
+  missing_catalog_ids: number[];
   analysis_notes: string;
 }
 
@@ -94,6 +96,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const anthropic = new Anthropic({ apiKey: anthropicApiKey });
     const allDetections: DetectedProduct[] = [];
+    const allMissingIds: number[] = [];
 
     // Process each image
     for (const image of auditImages) {
@@ -159,6 +162,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           })
           .eq('id', image.id);
 
+        // Collect missing product IDs recommended by Claude
+        if (visionResult.missing_catalog_ids?.length) {
+          allMissingIds.push(...visionResult.missing_catalog_ids);
+        }
+
         // Process detected products
         for (const detected of visionResult.products_detected) {
           if (!detected.is_unilever) continue;
@@ -193,26 +201,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
     }
 
-    // Determine missing products (in planogram but not found)
+    // Determine missing products from Claude's recommendations + planogram
     const foundProductIds = new Set(
       allDetections
         .map((d) => matchToCatalog(d, products || [])?.id)
         .filter(Boolean)
     );
 
+    // Collect all missing product IDs from Claude's analysis across images
+    const missingFromClaude = new Set<number>();
+    for (const id of allMissingIds) {
+      if (!foundProductIds.has(id)) missingFromClaude.add(id);
+    }
+
+    // Also add planogram missing products
     for (const productId of planogramProductIds) {
-      if (!foundProductIds.has(productId)) {
-        const product = products?.find((p) => p.id === productId);
-        await supabase.from('audit_findings').insert({
-          audit_id,
-          product_id: productId,
-          brand_id: product?.brand_id || null,
-          status: 'missing',
-          confidence_score: 1.0,
-          detected_label: product?.name || null,
-          detected_brand: (product?.brands as { name: string })?.name || null,
-        });
-      }
+      if (!foundProductIds.has(productId)) missingFromClaude.add(productId);
+    }
+
+    for (const productId of missingFromClaude) {
+      const product = products?.find((p) => p.id === productId);
+      await supabase.from('audit_findings').insert({
+        audit_id,
+        product_id: productId,
+        brand_id: product?.brand_id || null,
+        status: 'missing',
+        confidence_score: 1.0,
+        detected_label: product?.name || null,
+        detected_brand: (product?.brands as { name: string })?.name || null,
+      });
     }
 
     // Complete audit
@@ -274,19 +291,21 @@ ${catalogList || '  (No products in catalog yet - identify what you see)'}
 
 INSTRUCTIONS:
 1. Examine the entire shelf image carefully
-2. For each Unilever product you can identify:
+2. Identify the shelf category (e.g. condiments, personal care, home care, food, beverages, etc.)
+3. For each Unilever product you can identify:
    - Read the brand name from the packaging
    - Read the product variant/description text
    - Read the size/weight if visible
-   - Note the approximate shelf position (top/middle/bottom, left/center/right)
-   - Count visible facings (how many of the same product side-by-side)
+   - Note the approximate shelf position
+   - Count visible facings
    - Estimate your confidence (high/medium/low)
-3. Also note any non-Unilever competitor products if clearly visible
-4. If packaging is partially obscured, still attempt identification with lower confidence
+4. Also note non-Unilever competitor products if clearly visible
+5. IMPORTANT: Based on the shelf category and what you see, identify which Unilever products from the catalog SHOULD be on this shelf but are NOT visible. Use the catalog IDs provided above. Only recommend products that are relevant to this shelf type (e.g. don't recommend washing powder for a condiments shelf).
 
 Respond ONLY with valid JSON in this exact structure:
 {
   "shelf_section": "description of what section this appears to be",
+  "shelf_category": "condiments" | "personal_care" | "home_care" | "food" | "hair_care" | "skin_care" | "mixed",
   "image_quality": "good" | "fair" | "poor",
   "products_detected": [
     {
@@ -302,7 +321,8 @@ Respond ONLY with valid JSON in this exact structure:
       "notes": "any relevant observation"
     }
   ],
-  "analysis_notes": "overall observations about shelf condition"
+  "missing_catalog_ids": [array of catalog IDs from the list above that should be on this shelf but are not visible],
+  "analysis_notes": "overall observations about shelf condition and recommendations"
 }`;
 }
 

@@ -27,7 +27,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .select('*')
       .eq('id', userId)
       .single();
-    setProfile(data);
+
+    if (data) {
+      setProfile(data);
+    } else {
+      // Profile doesn't exist yet (email confirmed but profile insert failed during signup)
+      // Create it now that the user has a valid session
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: newProfile } = await supabase.from('profiles').insert({
+          id: userId,
+          full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+          email: user.email,
+          role: 'field_rep',
+        }).select().single();
+        setProfile(newProfile);
+      }
+    }
   }
 
   useEffect(() => {

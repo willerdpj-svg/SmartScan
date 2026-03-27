@@ -37,6 +37,14 @@ export interface Product {
   created_at: string;
   updated_at: string;
   reference_images?: ProductReferenceImage[];
+  // Bulk upload fields
+  barcode: string | null;
+  category: string | null;
+  pack_size: string | null;
+  vat: boolean;
+  moq: number;
+  unit_price: number | null;
+  supplier: string | null;
 }
 
 export interface ProductReferenceImage {

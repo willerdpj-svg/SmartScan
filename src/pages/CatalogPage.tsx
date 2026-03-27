@@ -4,8 +4,9 @@ import { useBrands, useCreateBrand } from '../hooks/useBrands';
 import { useProducts, useCreateProduct } from '../hooks/useProducts';
 import { BRAND_CATEGORIES, BRAND_CATEGORY_COLORS } from '../lib/constants';
 import type { BrandCategory } from '../types';
-import { Plus, Package, Search, X } from 'lucide-react';
+import { Plus, Package, Search, X, Upload } from 'lucide-react';
 import clsx from 'clsx';
+import BulkUploadModal from '../components/catalog/BulkUploadModal';
 
 export default function CatalogPage() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ export default function CatalogPage() {
   const [search, setSearch] = useState('');
   const [showBrandModal, setShowBrandModal] = useState(false);
   const [showProductModal, setShowProductModal] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   // Brand form
   const [brandName, setBrandName] = useState('');
@@ -77,9 +79,15 @@ export default function CatalogPage() {
                 setShowProductModal(true);
               }
             }}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+            className="flex items-center gap-1.5 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
           >
             <Plus className="w-4 h-4" /> Product
+          </button>
+          <button
+            onClick={() => setShowUploadModal(true)}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600"
+          >
+            <Upload className="w-4 h-4" /> Bulk Upload
           </button>
         </div>
       </div>
@@ -168,6 +176,11 @@ export default function CatalogPage() {
           <Package className="w-12 h-12 mx-auto mb-3" />
           <p className="text-sm">No products found</p>
         </div>
+      )}
+
+      {/* Bulk Upload Modal */}
+      {showUploadModal && (
+        <BulkUploadModal onClose={() => setShowUploadModal(false)} />
       )}
 
       {/* Brand Modal */}

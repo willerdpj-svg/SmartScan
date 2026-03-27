@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "smartscan",
-      "cwd": "../SmartScan",
+      "cwd": ".",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 5173

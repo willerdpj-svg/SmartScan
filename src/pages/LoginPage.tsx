@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { ScanLine } from 'lucide-react';
 
 export default function LoginPage() {
   const { user, loading, signIn } = useAuth();
@@ -30,10 +29,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-500 to-primary-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
         <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 bg-primary-50 rounded-xl flex items-center justify-center mb-4">
-            <ScanLine className="w-8 h-8 text-primary-500" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">SmartScan</h1>
+          <img src="/logo.jpeg" alt="Clicka" className="h-16 object-contain mb-2" />
           <p className="text-sm text-gray-500 mt-1">Shelf Product Recognition</p>
         </div>
 

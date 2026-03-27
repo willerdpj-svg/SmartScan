@@ -42,8 +42,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
       {/* Logo */}
       <div className="flex items-center justify-between px-4 py-5 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <ScanLine className="w-7 h-7 text-primary-500" />
-          <span className="text-xl font-bold text-primary-500">SmartScan</span>
+          <img src="/logo.jpeg" alt="Clicka" className="h-8 object-contain" />
         </div>
         {onClose && (
           <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-600 lg:hidden">

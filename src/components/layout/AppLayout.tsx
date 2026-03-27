@@ -37,7 +37,7 @@ export default function AppLayout() {
           >
             <Menu className="w-5 h-5" />
           </button>
-          <h1 className="text-lg font-bold text-primary-500">SmartScan</h1>
+          <img src="/logo.jpeg" alt="Clicka" className="h-7 object-contain" />
         </header>
 
         {/* Page content */}

@@ -29,7 +29,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-500 to-primary-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
         <div className="flex flex-col items-center mb-8">
-          <img src="/logo.jpeg" alt="Clicka" className="h-16 object-contain mb-2" />
+          <img src="/logo.png" alt="Clicka" className="h-16 object-contain mb-2" />
           <p className="text-sm text-gray-500 mt-1">Shelf Product Recognition</p>
         </div>
 

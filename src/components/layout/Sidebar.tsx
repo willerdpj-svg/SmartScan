@@ -10,7 +10,6 @@ import {
   BarChart3,
   LogOut,
   X,
-  ScanLine,
 } from 'lucide-react';
 import clsx from 'clsx';
 
